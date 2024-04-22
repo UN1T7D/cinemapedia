@@ -13,7 +13,7 @@ class MovieHorizontalListview extends StatefulWidget {
       {super.key,
       required this.movies,
       required this.title,
-      required this.subTitle,
+      this.subTitle,
       this.loadNextPage});
 
   @override
