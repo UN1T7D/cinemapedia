@@ -4,6 +4,7 @@
         "compa",
         "datasource",
         "Moviecallback",
+        "Moviesnotifier",
         "riverpod"
     ]
 }
