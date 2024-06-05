@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +26,7 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     final Movie? movie = ref.watch(movieInfoProvider)[
         widget.movieId]; // En el mapa, busca el elemento filtrado
 
@@ -201,6 +202,15 @@ class _CustomSliverAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SliverAppBar(
+      actions: [
+        IconButton(
+            onPressed: () {},
+            // icon: Icon(Icons.favorite_border)
+            icon: Icon(
+              Icons.favorite_rounded,
+              color: Colors.red,
+            ))
+      ],
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
@@ -218,32 +228,34 @@ class _CustomSliverAppBar extends StatelessWidget {
                 movie.posterPath,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress != null) return SizedBox();
+                  if (loadingProgress != null) return const SizedBox();
                   return FadeIn(child: child);
                 },
               ),
             ),
-            const SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0.7, 1.0],
-                          colors: [Colors.transparent, Colors.black87]))),
-            ),
-            const SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      gradient:
-                          LinearGradient(begin: Alignment.topLeft, stops: [
-                0.0,
-                0.4
-              ], colors: [
+            const CustomGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.7, 1.0],
+                colors: [Colors.transparent, Colors.black87]),
+            const CustomGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [0.0, 0.3],
+              colors: [
                 Colors.black87,
                 Colors.transparent,
-              ]))),
-            )
+              ],
+            ),
+            const CustomGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 0.4],
+              colors: [
+                Colors.black87,
+                Colors.transparent,
+              ],
+            ),
           ],
         ),
       ),
