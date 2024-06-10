@@ -26,7 +26,7 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     final Movie? movie = ref.watch(movieInfoProvider)[
         widget.movieId]; // En el mapa, busca el elemento filtrado
 
@@ -194,33 +194,45 @@ class _ActorsByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({super.key, required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
     final size = MediaQuery.of(context).size;
     return SliverAppBar(
       actions: [
         IconButton(
-            onPressed: () {},
-            // icon: Icon(Icons.favorite_border)
-            icon: Icon(
-              Icons.favorite_rounded,
-              color: Colors.red,
-            ))
+          onPressed: () async {
+            // ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
+            await ref
+                .read(favoriteMoviesProvider.notifier)
+                .togglefavorite(movie);
+            ref.invalidate(isFavoriteProvider(movie.id));
+          },
+          // icon: Icon(Icons.favorite_border)
+          icon: isFavoriteFuture.when(
+              data: (isFavorite) => isFavorite
+                  ? const Icon(
+                      Icons.favorite_rounded,
+                      color: Colors.red,
+                    )
+                  : const Icon(
+                      Icons.favorite_border,
+                    ),
+              error: (_, __) => throw UnimplementedError(),
+              loading: () => const CircularProgressIndicator(
+                    strokeWidth: 2,
+                  )),
+        )
       ],
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        // title: Text(
-        //   movie.title,
-        //   style: const TextStyle(fontSize: 20),
-        //   textAlign: TextAlign.right,
-        // ),
         background: Stack(
           children: [
             SizedBox.expand(
